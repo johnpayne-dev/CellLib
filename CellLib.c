@@ -157,6 +157,11 @@ void CLSet(int x, int y, unsigned char c)
 	CellStagingBuffer[y * AppInfo.Width + x] = c;
 }
 
+void CLSetAll(unsigned char * buffer)
+{
+	memcpy(CellStagingBuffer, buffer, AppInfo.Width * AppInfo.Height);
+}
+
 unsigned char CLGet(int x, int y)
 {
 	if (x < 0 || y < 0 || x >= AppInfo.Width || y >= AppInfo.Height) { return 0; }

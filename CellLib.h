@@ -27,6 +27,8 @@ void CLClear(unsigned char c);
 
 void CLSet(int x, int y, unsigned char c);
 
+void CLSetAll(unsigned char * buffer);
+
 unsigned char CLGet(int x, int y);
 
 void CLGetAll(unsigned char * buffer);
