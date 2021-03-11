@@ -109,7 +109,7 @@ static void Initialize()
 
 static void Frame()
 {
-	if (AppInfo.Frame != NULL) { AppInfo.Frame(); }
+	if (AppInfo.Update != NULL) { AppInfo.Update(); }
 	
 	sg_image_data data = { .subimage[0][0] = { .ptr = CellStagingBuffer, .size = AppInfo.Width * AppInfo.Height } };
 	sg_update_image(CellBuffer, &data);
@@ -148,6 +148,7 @@ sapp_desc sokol_main(int argc, char* argv[])
 		.width = AppInfo.CellSize * AppInfo.Width,
 		.height = AppInfo.CellSize * AppInfo.Height,
 		.window_title = AppInfo.Title,
+		.swap_interval = 1,
 	};
 }
 
