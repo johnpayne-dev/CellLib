@@ -16,9 +16,6 @@ static void Initialize()
 {
 	AppInfo.Width = sapp_width() / AppInfo.CellSize;
 	AppInfo.Height = sapp_height() / AppInfo.CellSize;
-#if defined(__APPLE__)
-	_sapp.macos.window.styleMask &= ~NSWindowStyleMaskResizable;
-#endif
 	sg_setup(&(sg_desc){ .context = sapp_sgcontext() });
 	
 	CellStagingBuffer = malloc(AppInfo.Width * AppInfo.Height);
