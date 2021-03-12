@@ -17,6 +17,9 @@ static void Initialize()
 	AppInfo.CellSize *= sapp_width() / (AppInfo.Width * AppInfo.CellSize);
 	AppInfo.Width = sapp_width() / AppInfo.CellSize;
 	AppInfo.Height = sapp_height() / AppInfo.CellSize;
+#ifdef __APPLE__
+	_sapp.macos.window.styleMask &= ~NSWindowStyleMaskResizable;
+#endif
 	sg_setup(&(sg_desc){ .context = sapp_sgcontext() });
 	
 	CellStagingBuffer = malloc(AppInfo.Width * AppInfo.Height);
@@ -68,8 +71,8 @@ static void Initialize()
 			"	ivec2 size = textureSize(Cells, 0);"
 			"	vec2 cellSize = Viewport / vec2(size);"
 			"	vec2 cUV = mod(gl_FragCoord.xy, cellSize);"
-			"	vec2 line = round(0.1f * cellSize);"
-			"	if (cUV.x < line.x || cUV.y < line.y)"
+			"	vec2 line = round(0.05f * cellSize);"
+			"	if (cUV.x <= line.x || cUV.y <= line.y || cUV.x >= cellSize.x - line.x || cUV.y >= cellSize.y - line.y)"
 			"	{"
 			"		FinalColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);"
 			"		return;"
@@ -102,12 +105,12 @@ static void Initialize()
 	};
 	Pipeline = sg_make_pipeline(&pipelineInfo);
 	
-	if (AppInfo.Initialize != NULL) { AppInfo.Initialize(); }
+	if (AppInfo.Startup != NULL) { AppInfo.Startup(); }
 }
 
 static void Frame()
 {
-	if (AppInfo.Update != NULL) { AppInfo.Update(); }
+	if (AppInfo.Frame != NULL) { AppInfo.Frame(); }
 	
 	sg_image_data data = { .subimage[0][0] = { .ptr = CellStagingBuffer, .size = AppInfo.Width * AppInfo.Height } };
 	sg_update_image(CellBuffer, &data);
@@ -126,7 +129,7 @@ static void Frame()
 
 static void Deinitialize()
 {
-	if (AppInfo.Deinitialize != NULL) { AppInfo.Deinitialize(); }
+	if (AppInfo.Shutdown != NULL) { AppInfo.Shutdown(); }
 	sg_destroy_pipeline(Pipeline);
 	sg_destroy_shader(Shader);
 	sg_destroy_buffer(Quad);

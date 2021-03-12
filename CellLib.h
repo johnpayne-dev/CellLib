@@ -16,9 +16,9 @@ typedef struct CLAppInfo
 	int Width;
 	int Height;
 	char * Title;
-	void (*Initialize)(void);
-	void (*Update)(void);
-	void (*Deinitialize)(void);
+	void (*Startup)(void);
+	void (*Frame)(void);
+	void (*Shutdown)(void);
 } CLAppInfo;
 
 CLAppInfo CLMain(int argc, char * argv[]);
