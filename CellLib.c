@@ -14,6 +14,7 @@ static sg_image CellBuffer;
 
 static void Initialize()
 {
+	AppInfo.CellSize *= sapp_width() / (AppInfo.Width * AppInfo.CellSize);
 	AppInfo.Width = sapp_width() / AppInfo.CellSize;
 	AppInfo.Height = sapp_height() / AppInfo.CellSize;
 	sg_setup(&(sg_desc){ .context = sapp_sgcontext() });
@@ -146,6 +147,7 @@ sapp_desc sokol_main(int argc, char* argv[])
 		.height = AppInfo.CellSize * AppInfo.Height,
 		.window_title = AppInfo.Title,
 		.swap_interval = 1,
+		.high_dpi = true,
 	};
 }
 
