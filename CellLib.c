@@ -127,6 +127,26 @@ static void Frame()
 	sg_commit();
 }
 
+static void Event(const sapp_event * event)
+{
+	if (event->type == SAPP_EVENTTYPE_KEY_DOWN)
+	{
+		if (AppInfo.KeyPressed != NULL) { AppInfo.KeyPressed((CLKey)event->key_code); }
+	}
+	if (event->type == SAPP_EVENTTYPE_KEY_UP)
+	{
+		if (AppInfo.KeyReleased != NULL) { AppInfo.KeyReleased((CLKey)event->key_code); }
+	}
+	if (event->type == SAPP_EVENTTYPE_MOUSE_DOWN)
+	{
+		if (AppInfo.MousePressed != NULL) { AppInfo.MousePressed((CLMouseButton)event->mouse_button, event->mouse_x / AppInfo.CellSize, AppInfo.Height - event->mouse_y / AppInfo.CellSize); }
+	}
+	if (event->type == SAPP_EVENTTYPE_MOUSE_UP)
+	{
+		if (AppInfo.MouseReleased != NULL) { AppInfo.MouseReleased((CLMouseButton)event->mouse_button, event->mouse_x / AppInfo.CellSize, AppInfo.Height - event->mouse_y / AppInfo.CellSize); }
+	}
+}
+
 static void Deinitialize()
 {
 	if (AppInfo.Shutdown != NULL) { AppInfo.Shutdown(); }
@@ -145,6 +165,7 @@ sapp_desc sokol_main(int argc, char* argv[])
 	{
 		.init_cb = Initialize,
 		.frame_cb = Frame,
+		.event_cb = Event,
 		.cleanup_cb = Deinitialize,
 		.width = AppInfo.CellSize * AppInfo.Width,
 		.height = AppInfo.CellSize * AppInfo.Height,
