@@ -11,6 +11,9 @@ static sg_shader Shader;
 static sg_pipeline Pipeline;
 static unsigned char * CellStagingBuffer;
 static sg_image CellBuffer;
+static bool Keys[CLKeyCount] = { 0 };
+static bool Buttons[3] = { 0 };
+static int MouseX, MouseY;
 
 static void Initialize()
 {
@@ -129,21 +132,27 @@ static void Frame()
 
 static void Event(const sapp_event * event)
 {
+	MouseX = event->mouse_x / AppInfo.CellSize;
+	MouseY = AppInfo.Height - event->mouse_y / AppInfo.CellSize;
 	if (event->type == SAPP_EVENTTYPE_KEY_DOWN)
 	{
-		if (AppInfo.KeyPressed != NULL) { AppInfo.KeyPressed((CLKey)event->key_code); }
+		Keys[event->key_code] = true;
+		if (AppInfo.KeyPressed != NULL) { AppInfo.KeyPressed((CLKey)event->key_code, event->key_repeat); }
 	}
 	if (event->type == SAPP_EVENTTYPE_KEY_UP)
 	{
-		if (AppInfo.KeyReleased != NULL) { AppInfo.KeyReleased((CLKey)event->key_code); }
+		Keys[event->key_code] = false;
+		if (AppInfo.KeyReleased != NULL) { AppInfo.KeyReleased((CLKey)event->key_code, event->key_repeat); }
 	}
 	if (event->type == SAPP_EVENTTYPE_MOUSE_DOWN)
 	{
-		if (AppInfo.MousePressed != NULL) { AppInfo.MousePressed((CLMouseButton)event->mouse_button, event->mouse_x / AppInfo.CellSize, AppInfo.Height - event->mouse_y / AppInfo.CellSize); }
+		Buttons[event->mouse_button] = true;
+		if (AppInfo.MousePressed != NULL) { AppInfo.MousePressed((CLMouseButton)event->mouse_button, MouseX, MouseY); }
 	}
 	if (event->type == SAPP_EVENTTYPE_MOUSE_UP)
 	{
-		if (AppInfo.MouseReleased != NULL) { AppInfo.MouseReleased((CLMouseButton)event->mouse_button, event->mouse_x / AppInfo.CellSize, AppInfo.Height - event->mouse_y / AppInfo.CellSize); }
+		Buttons[event->mouse_button] = false;
+		if (AppInfo.MouseReleased != NULL) { AppInfo.MouseReleased((CLMouseButton)event->mouse_button, MouseX, MouseY); }
 	}
 }
 
@@ -206,6 +215,26 @@ void CLClear(unsigned char c)
 			CellStagingBuffer[y * AppInfo.Width + x] = c;
 		}
 	}
+}
+
+bool CLIsKeyDown(CLKey key)
+{
+	return Keys[key];
+}
+
+bool CLIsMouseButtonDown(CLMouseButton button)
+{
+	return Buttons[button];
+}
+
+int CLMouseX()
+{
+	return MouseX;
+}
+
+int CLMouseY()
+{
+	return MouseY;
 }
 
 int CLCellSize()

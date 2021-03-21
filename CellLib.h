@@ -42,7 +42,7 @@ typedef enum CLKey
 	CLKeyKPSubtract       = 333, CLKeyKPAdd           = 334, CLKeyKPEnter         = 335, CLKeyKPEqual         = 336,
 	CLKeyLeftShift        = 340, CLKeyLeftControl     = 341, CLKeyLeftAlt         = 342, CLKeyLeftSuper       = 343,
 	CLKeyRightShift       = 344, CLKeyRightControl    = 345, CLKeyRightAlt        = 346, CLKeyRightSuper      = 347,
-	CLKeyMenu             = 348,
+	CLKeyMenu             = 348, CLKeyCount,
 } CLKey;
 
 typedef enum CLMouseButton
@@ -61,8 +61,8 @@ typedef struct CLAppInfo
 	char * Title;
 	void (*Startup)(void);
 	void (*Frame)(void);
-	void (*KeyPressed)(CLKey key);
-	void (*KeyReleased)(CLKey key);
+	void (*KeyPressed)(CLKey key, bool keyRepeat);
+	void (*KeyReleased)(CLKey key, bool keyRepeat);
 	void (*MousePressed)(CLMouseButton button, int x, int y);
 	void (*MouseReleased)(CLMouseButton button, int x, int y);
 	void (*Shutdown)(void);
@@ -79,6 +79,14 @@ void CLSetAll(unsigned char * buffer);
 unsigned char CLGet(int x, int y);
 
 void CLGetAll(unsigned char * buffer);
+
+bool CLIsKeyDown(CLKey key);
+
+bool CLIsMouseButtonDown(CLMouseButton button);
+
+int CLMouseX(void);
+
+int CLMouseY(void);
 
 int CLCellSize(void);
 
