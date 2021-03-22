@@ -1,5 +1,6 @@
 #ifndef CellLib_h
 #define CellLib_h
+#include <stdbool.h>
 
 #define CLColorBlack   0b000000
 #define CLColorRed     0b110000
